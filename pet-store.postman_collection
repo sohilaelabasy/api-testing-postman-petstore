@@ -1,0 +1,1118 @@
+{
+	"info": {
+		"_postman_id": "ad6cf854-f8f1-43fd-b266-d1c804e4f442",
+		"name": "pet-store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49584185"
+	},
+	"item": [
+		{
+			"name": "pet",
+			"item": [
+				{
+					"name": "create pet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"pet created successfully -status 200\", function(){\r",
+									"     pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respone contains the pet we created\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.name).to.eql(\"Buddy\");\r",
+									"     pm.expect(jsonData.id).to.eql(54321);\r",
+									"    pm.expect(jsonData.status).to.eql(\"available\");\r",
+									"});\r",
+									"pm.test(\"Respone has all required fields\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('id');\r",
+									"    pm.expect(jsonData).to.have.property('name');\r",
+									"    pm.expect(jsonData).to.have.property('status');\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 54321,\r\n  \"category\": {\r\n    \"id\": 1,\r\n    \"name\": \"Dogs\"\r\n  },\r\n  \"name\": \"Buddy\",\r\n  \"photoUrls\": [\r\n    \"https://example.com/photo.jpg\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 1,\r\n      \"name\": \"friendly\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get pet by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"pet id is correct\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(54321);\r",
+									"});\r",
+									"pm.test(\"pet name is buddy\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.name).to.eql(\"Buddy\");\r",
+									"});\r",
+									"pm.test(\"pet status is available\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"available\");\r",
+									"});\r",
+									"pm.test(\"pet category is Dogs\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.category.name).to.eql(\"Dogs\")\r",
+									"});\r",
+									"pm.test(\"pet tags is friendly\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.tags[0].name).to.eql(\"friendly\");\r",
+									"});\r",
+									"pm.test(\"photoUrls exist\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.photoUrls.length).to.be.greaterThan(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/pet/{{petId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update existing pet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"pet updated successfully-status 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"pet name was updated to doggie\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.name).to.eql(\"Doggie\");\r",
+									"});\r",
+									"pm.test(\"pet tag name was updated to cutie\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.tags[0].name).to.eql(\"cutie\");\r",
+									"});\r",
+									"pm.test(\"pet status was updated to sold\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"sold\");\r",
+									"});\r",
+									"pm.test(\"Category remained Dogs\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.category.name).to.eql(\"Dogs\");\r",
+									"});\r",
+									"pm.test(\"Pet ID is still the same\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(54321);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 54321,\r\n  \"category\": {\r\n    \"id\": 1,\r\n    \"name\": \"Dogs\"\r\n  },\r\n  \"name\": \"Doggie\",\r\n  \"photoUrls\": [\r\n  \"https://example.com/photo.jpg\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 1,\r\n      \"name\": \"cutie\"\r\n    }\r\n  ],\r\n  \"status\": \"sold\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify pet updated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"pet name is doggie\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.name).to.eql(\"Doggie\");\r",
+									"});\r",
+									"pm.test(\"pet tag name is cutie\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.tags[0].name).to.eql(\"cutie\");\r",
+									"});\r",
+									"pm.test(\"pet status is sold\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"sold\");\r",
+									"});\r",
+									"pm.test(\"Category is Dogs\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.category.name).to.eql(\"Dogs\");\r",
+									"});\r",
+									"pm.test(\"Pet ID is still the same\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(54321);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/pet/{{petId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find pet by status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Array is not empty\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length).to.be.greaterThan(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"All pets have status = sold\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    jsonData.forEach(function(pet) {\r",
+									"        pm.expect(pet.status).to.eql(\"sold\");\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Our pet (54321) is in the list\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var ourPet = jsonData.find(pet => pet.id === 54321);\r",
+									"    pm.expect(ourPet).to.exist;\r",
+									"    pm.expect(ourPet.name).to.eql(\"Doggie\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/pet/findByStatus?status=sold",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pet",
+								"findByStatus"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "sold"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updated form data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"update confirmed \" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"     pm.expect(jsonData.message).to.eql(\"54321\");\r",
+									"     pm.expect(jsonData.code).to.eql(200);\r",
+									"     pm.expect(jsonData.type).to.eql(\"unknown\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name ",
+									"value": "updated name",
+									"type": "text"
+								},
+								{
+									"key": "status ",
+									"value": "pending",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pet/{{petId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get the pet updated form data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"name updated successfully\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.name).to.eql(\"updated name \");\r",
+									"});\r",
+									"pm.test(\"pet status is updated \" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"pending\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/pet/{{petId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload image",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response code should be 200\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Type should be success\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.type).to.eql(\"success\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Message should contain upload confirmation\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.exist;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "",
+									"type": "file",
+									"src": "/C:/Users/hp/Pictures/bug 3.PNG"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pet/{{petId}}/uploadImage",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}",
+								"uploadImage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove pet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response contains the deleted pet data\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(54321);\r",
+									"    pm.expect(jsonData.name).to.eql(\"Doggie\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/pet/{{petId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "everything about your pet"
+		},
+		{
+			"name": "store",
+			"item": [
+				{
+					"name": "store inventory",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"check if available exists\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('available')\r",
+									"});\r",
+									"pm.test(\"check if the response is object \" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an('object');\r",
+									"});\r",
+									"pm.test(\"check if sold exists\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('sold');\r",
+									"});\r",
+									"pm.test(\"available value is a number\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.available).to.be.a('number');\r",
+									"});\r",
+									"pm.test(\"available count is positive\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.available).to.be.above(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/store/inventory",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"inventory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "place an order for a pet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"order id is correct\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(1);\r",
+									"});\r",
+									"pm.test(\"pet id is correct\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.petId).to.eql(54321);\r",
+									"});\r",
+									"pm.test(\"order quantity is correct\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.quantity).to.eql(1);\r",
+									"});\r",
+									"pm.test(\"order status is placed\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"placed\")\r",
+									"});\r",
+									"pm.test(\"order complete is true\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.complete).to.eql(true);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 1,\r\n  \"petId\": {{petId}},\r\n  \"quantity\": 1,\r\n  \"shipDate\": \"2025-12-03T22:25:59.195Z\",\r\n  \"status\": \"placed\",\r\n  \"complete\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/store/order",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find purchase order by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"order id is correct\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(1);\r",
+									"});\r",
+									"pm.test(\"pet id is correct\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.petId).to.eql(54321);\r",
+									"});\r",
+									"pm.test(\"order quantity is correct\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.quantity).to.eql(1);\r",
+									"});\r",
+									"pm.test(\"order status is placed\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.status).to.eql(\"placed\")\r",
+									"});\r",
+									"pm.test(\"order complete is true\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.complete).to.eql(true);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/store/order/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"order",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete purchase order by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"response code is 200 \" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"response message is 1 \" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"1\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/store/order/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"order",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Access to Petstore ordersEndFragment"
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"response message is ok \" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"ok\");\r",
+									"});\r",
+									"pm.test(\"response code is 200\", function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.code).to.eql(200);\r",
+									"}); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"id\": 1234,\r\n    \"username\": \"ahmed_ali\",\r\n    \"firstName\": \"ahmed\",\r\n    \"lastName\": \"ali\",\r\n    \"email\": \"ahmedali@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"phone\": \"01055544411\",\r\n    \"userStatus\": 1\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/createWithList",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"createWithList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create with list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"response body isn't empty\" , function(){\r",
+									"    pm.response.to.have.body();\r",
+									"});\r",
+									"pm.test(\"Response is valid JSON\", function () {\r",
+									"    pm.response.to.be.json;\r",
+									"});\r",
+									"pm.test(\"Response has correct structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('code');\r",
+									"    pm.expect(jsonData).to.have.property('type');\r",
+									"    pm.expect(jsonData).to.have.property('message');\r",
+									"});\r",
+									"pm.test(\"Response code is 200\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Response message is 'ok'\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"ok\");\r",
+									"});\r",
+									"pm.test(\"Content-Type is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"id\": 1001,\r\n    \"username\": \"alice_test\",\r\n    \"firstName\": \"Alice\",\r\n    \"lastName\": \"Smith\",\r\n    \"email\": \"alice@example.com\",\r\n    \"password\": \"password123\",\r\n    \"phone\": \"1111111111\",\r\n    \"userStatus\": 1\r\n  },\r\n  {\r\n    \"id\": 1002,\r\n    \"username\": \"bob_test\",\r\n    \"firstName\": \"Bob\",\r\n    \"lastName\": \"Johnson\",\r\n    \"email\": \"bob@example.com\",\r\n    \"password\": \"password456\",\r\n    \"phone\": \"2222222222\",\r\n    \"userStatus\": 1\r\n  },\r\n  {\r\n    \"id\": 1003,\r\n    \"username\": \"charlie_test\",\r\n    \"firstName\": \"Charlie\",\r\n    \"lastName\": \"Brown\",\r\n    \"email\": \"charlie@example.com\",\r\n    \"password\": \"password789\",\r\n    \"phone\": \"3333333333\",\r\n    \"userStatus\": 1\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/createWithList",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"createWithList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user by user name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"user id is correct \" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.eql(1234);\r",
+									"});\r",
+									"pm.test(\"first name is correct\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.firstName).to.eql(\"ahmed\");\r",
+									"});\r",
+									"pm.test(\"last name is correct\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.lastName).to.eql(\"ali\");\r",
+									"});\r",
+									"pm.test(\"email is correct\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.email).to.eql(\"ahmedali@gmail.com\");\r",
+									"});\r",
+									"pm.test(\"password is correct\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.password).to.eql(\"123456\");\r",
+									"});\r",
+									"pm.test(\"phone is correct\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.phone).to.eql(\"01055544411\");\r",
+									"});\r",
+									"pm.test(\"userStatus is correct\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.userStatus).to.eql(1);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/ahmed_ali",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"ahmed_ali"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "verify after update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"verify that last name is upated\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.lastName).to.eql(\"AliUpdated\")\r",
+									"});\r",
+									"pm.test(\"verify that email is upated\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.email).to.eql(\"ahmed.updated@gmail.com\")\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/ahmed_ali",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"ahmed_ali"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logs user into system",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"response code is 200\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"response message includes user session \" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.include(\"logged in user session\");\r",
+									"});\r",
+									"var jsonData=pm.response.json();\r",
+									"var sessionToken = jsonData.message.split(\":\")[1];\r",
+									"pm.collectionVariables.set(\"sessionToken\" , sessionToken);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/login?username=ahmed_ali&password=123456",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "ahmed_ali"
+								},
+								{
+									"key": "password",
+									"value": "123456"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "log out",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"response code is 200\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"message is ok \" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"ok\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"response code is 200\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"response message is correct\" , function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"alice_test\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/alice_test",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"alice_test"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Operations about user"
+		}
+	],
+	"variable": [
+		{
+			"key": "sessionToken",
+			"value": ""
+		}
+	]
+}
